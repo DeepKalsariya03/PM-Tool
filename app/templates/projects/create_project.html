@@ -1,0 +1,32 @@
+<!--
+Project creation and editing page template for PM Tool.
+Allows users to create or edit projects with fields for name, description, deadline, and status.
+-->
+
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ 'Edit' if project else 'Create' }} Project</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.deadline.label(class="form-label") }}
+            {{ form.deadline(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.status.label(class="form-label") }}
+            {{ form.status(class="form-select") }}
+        </div>
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+</div>
+{% endblock %}

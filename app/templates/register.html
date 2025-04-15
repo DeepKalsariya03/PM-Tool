@@ -1,0 +1,19 @@
+<!--
+Registration page template for the PM Tool.
+Displays a form for new users to create an account with a username, password, and role.
+-->
+
+
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<h3>Register</h3>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.username.label }}{{ form.username(class="form-control") }}</div>
+    <div class="mb-3">{{ form.password.label }}{{ form.password(class="form-control") }}</div>
+    <div class="mb-3">{{ form.confirm_password.label }}{{ form.confirm_password(class="form-control") }}</div>
+    <div class="mb-3">{{ form.role.label }}{{ form.role(class="form-select") }}</div>
+    {{ form.submit(class="btn btn-success") }}
+</form>
+{% endblock %}

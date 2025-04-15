@@ -1,0 +1,21 @@
+<!--
+Dashboard page template for the PM Tool.
+Displays a personalized welcome message and user role.
+Provides a preview of upcoming features like tasks, project summaries, and progress insights.
+-->
+
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Welcome, {{ user.username }}!</h2>
+<p>Your role: <strong>{{ user.role.capitalize() }}</strong></p>
+
+<div class="mt-4">
+    <h5>Coming Soon:</h5>
+    <ul>
+        <li>Your assigned tasks</li>
+        <li>Project summaries</li>
+        <li>Progress insights</li>
+    </ul>
+</div>
+{% endblock %}

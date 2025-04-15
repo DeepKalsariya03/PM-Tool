@@ -1,0 +1,19 @@
+<!--
+Home page template for the PM Tool.
+Displays a welcoming message to users and provides login/register options.
+If the user is authenticated, they are encouraged to access the dashboard.
+-->
+
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h2>Welcome to the Project Management Tool</h2>
+
+{% if current_user.is_authenticated %}
+    <p>This is Home Page</p>
+{% else %}
+    <p>Please <a href="{{ url_for('auth.login') }}">log in</a> or <a href="{{ url_for('auth.register') }}">register</a> to access the dashboard.</p>
+{% endif %}
+{% endblock %}

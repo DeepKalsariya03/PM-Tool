@@ -1,0 +1,17 @@
+<!--
+Login page template for the PM Tool.
+Displays a form for users to enter their username and password to authenticate.
+-->
+
+
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<h3>Login</h3>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.username.label }}{{ form.username(class="form-control") }}</div>
+    <div class="mb-3">{{ form.password.label }}{{ form.password(class="form-control") }}</div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}
