@@ -4,18 +4,126 @@ Displays a personalized welcome message and user role.
 Provides a preview of upcoming features like tasks, project summaries, and progress insights.
 -->
 
-{% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
-{% block content %}
-<h2>Welcome, {{ user.username }}!</h2>
-<p>Your role: <strong>{{ user.role.capitalize() }}</strong></p>
 
-<div class="mt-4">
-    <h5>Coming Soon:</h5>
-    <ul>
-        <li>Your assigned tasks</li>
-        <li>Project summaries</li>
-        <li>Progress insights</li>
-    </ul>
+{% extends 'base.html' %}
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">👋 Welcome, {{ current_user.username }}!</h2>
+
+    <!-- Task Status Summary -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-secondary">
+                <div class="card-body text-center">
+                    <h5 class="card-title">To Do</h5>
+                    <p class="display-6">{{ status_counts['To Do'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title">In Progress</h5>
+                    <p class="display-6">{{ status_counts['In Progress'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Completed</h5>
+                    <p class="display-6">{{ status_counts['Completed'] }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Deadlines -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">⏰ Upcoming Deadlines</h4>
+            {% if upcoming_tasks %}
+                <ul class="list-group list-group-flush">
+                    {% for task in upcoming_tasks %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ task.title }}</strong> ({{ task.project.name }})
+                                <div class="text-muted small">{{ task.due_date.strftime('%b %d, %Y') }}</div>
+                            </div>
+                            <span class="badge bg-info text-dark">{{ task.status }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No upcoming tasks in the next 7 days.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- All Assigned Tasks -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">🗂️ Your Tasks</h4>
+            {% if tasks %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title</th>
+                            <th>Project</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Due Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.title }}</td>
+                            <td>{{ task.project.name }}</td>
+                            <td><span class="badge bg-info text-dark">{{ task.status }}</span></td>
+                            <td><span class="badge bg-warning text-dark">{{ task.priority }}</span></td>
+                            <td>{{ task.due_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted">You don't have any assigned tasks yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Profile Update Form -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">Profile Information</h4>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control", placeholder="Enter your name") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control", placeholder="Enter your email") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control", placeholder="New password (leave empty to keep current)") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.confirm_password.label(class="form-label") }}
+                    {{ form.confirm_password(class="form-control", placeholder="Confirm new password") }}
+                </div>
+                <button type="submit" class="btn btn-success">{{ form.submit.label }}</button>
+            </form>
+        </div>
+    </div>
+
+
 </div>
 {% endblock %}

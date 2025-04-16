@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}Project Detail{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Project Header -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title">{{ project.name }}</h2>
+            <p><strong>Description:</strong> {{ project.description or 'N/A' }}</p>
+            <p><strong>Deadline:</strong> {{ project.deadline }}</p>
+            <p><strong>Status:</strong> <span class="badge bg-secondary">{{ project.status }}</span></p>
+            <p><strong>Manager:</strong> {{ project.manager.username }}</p>
+
+            {% if team_members %}
+                <p><strong>Team Members:</strong>
+                    {% for member in team_members %}
+                        <span class="badge bg-light text-dark border">{{ member.username }}</span>
+                    {% endfor %}
+                </p>
+            {% else %}
+                <p class="text-muted">No team members assigned yet.</p>
+            {% endif %}
+
+            <p><strong>Task Progress:</strong></p>
+            {% set percent = (completed_tasks_count / tasks|length * 100) if tasks else 0 %}
+            <div class="progress mb-2" style="height: 20px;">
+                <div class="progress-bar bg-success" style="width: {{ percent }}%;">
+                    {{ percent|round(0) }}%
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Tasks Table -->
+    <div class="card mb-5 shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">Tasks</h4>
+            {% if tasks %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Assignee</th>
+                            <th>Due Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.title }}</td>
+                            <td><span class="badge bg-info text-dark">{{ task.status }}</span></td>
+                            <td><span class="badge bg-warning text-dark">{{ task.priority }}</span></td>
+                            <td>{{ task.assignee.username if task.assignee else 'Unassigned' }}</td>
+                            <td>{{ task.due_date }}</td>
+                            <td>
+                                {% if current_user.role in ['admin', 'manager'] or task.assignee_id == current_user.id %}
+                                    <a href="{{ url_for('project.edit_task', task_id=task.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <form action="{{ url_for('project.delete_task', task_id=task.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this task?')">Delete</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted">No tasks created for this project yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Task Creation Form -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Create New Task</h4>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.title.label(class="form-label") }}
+                        {{ form.title(class="form-control") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.due_date.label(class="form-label") }}
+                        {{ form.due_date(class="form-control") }}
+                    </div>
+                    <div class="col-12 mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows="3") }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.status.label(class="form-label") }}
+                        {{ form.status(class="form-select") }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.priority.label(class="form-label") }}
+                        {{ form.priority(class="form-select") }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.assignee_id.label(class="form-label") }}
+                        {{ form.assignee_id(class="form-select") }}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">{{ form.submit.label }}</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

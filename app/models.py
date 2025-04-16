@@ -26,6 +26,14 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f'<User {self.username} ({self.role})>'
     
+
+# Many-to-many association table between Project and User
+project_members = db.Table('project_members',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('project_id', db.Integer, db.ForeignKey('project.id'))
+)
+
+
 # Project model for storing project details
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +44,8 @@ class Project(db.Model):
     manager_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Assigned manager
 
     manager = db.relationship('User', backref='managed_projects')
+    members = db.relationship('User', secondary=project_members, backref='projects')
+
 
 # Task model for storing project details
 class Task(db.Model):

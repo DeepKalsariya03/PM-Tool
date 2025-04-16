@@ -5,8 +5,8 @@ for task and project creation using input fields with validation.
 """
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateField
-from wtforms.validators import DataRequired, EqualTo, Length
+from wtforms import SelectMultipleField, StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateField
+from wtforms.validators import DataRequired, EqualTo, Length, Optional
 
 # Login form for existing users
 class LoginForm(FlaskForm):
@@ -41,3 +41,18 @@ class TaskForm(FlaskForm):
     priority = SelectField('Priority', choices=[('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')])
     assignee_id = SelectField('Assign to', coerce=int)  # User selection for assignment
     submit = SubmitField('Save Task')
+
+class TeamAssignmentForm(FlaskForm):
+    members = SelectMultipleField('Assign Team Members', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Update Team')
+
+class ProfileForm(RegistrationForm):
+    # Reusing RegistrationForm, but adding email and name fields
+    name = StringField('Name', validators=[DataRequired(), Length(min=3)])
+    email = StringField('Email', validators=[DataRequired()])
+    password = PasswordField('New Password', validators=[Length(min=6), Optional()])
+    confirm_password = PasswordField('Confirm New Password', validators=[
+        EqualTo('password', message='Passwords must match'), Optional()
+    ])
+    
+    submit = SubmitField('Update Profile')

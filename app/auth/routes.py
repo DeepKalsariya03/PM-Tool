@@ -23,7 +23,7 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user)
             flash('Logged in successfully!', 'success')
-            return redirect(url_for('main.dashboard'))
+            return redirect(url_for('main.user_dashboard'))
         flash('Invalid username or password', 'danger')
     return render_template('login.html', form=form)
 
@@ -33,7 +33,7 @@ def login():
 def register():
     if current_user.role != 'admin':
         flash('Only Admins can register new users.', 'danger')
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('main.user_dashboard'))
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -46,7 +46,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Registration successful. You can now log in.', 'success')
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('main.user_dashboard'))
 
     return render_template('register.html', form=form)
 
